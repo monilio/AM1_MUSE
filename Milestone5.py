@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 
 
-def plot_NB_pos(problem, U0_list, t, temporal_scheme, N=3, **kwargs):
+def plot_NB(problem, U0_list, t, temporal_scheme, N=3, **kwargs):
 
     ax = plt.figure().add_subplot(projection='3d')
     dim = 3
@@ -52,4 +52,4 @@ tol_N = 1e-9
 
 
 
-plot_NB_pos(N_body_problem, U0, t, Evil_Euler, tol_J=tol_J, tol_N=tol_N, max_iter=max_iter)
+plot_NB(N_body_problem, U0, t, RK4, tol_J=tol_J, tol_N=tol_N, max_iter=max_iter)

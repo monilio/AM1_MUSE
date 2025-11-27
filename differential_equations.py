@@ -41,7 +41,7 @@ def N_body_problem(U, t, N=5):
             if j != i:
                 xj = U[2*j*dim:(2*j+1)*dim]
                 xi = U[2*i*dim:(2*i+1)*dim]
-                sum = sum + (xj-xi)/norm(xj-xi)**3
+                sum = sum + (xj-xi)/(norm(xj-xi))**3
                 
             #print(j)
             #print(i)

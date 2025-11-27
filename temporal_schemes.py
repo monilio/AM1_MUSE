@@ -61,13 +61,13 @@ def Leapfrog(F, U, t1, t2):
     dt = t2-t1
     N = len(U)
     
-    a = F(U, t1)[N//2:N]                                    # Se toma solo la parte de las aceleraciones
+    a = F(U, t1)[N//2:N]                                        # Se toma solo la parte de las aceleraciones
 
-    v_mid = U[N//2:N] + 0.5*a*dt                            # v(n+1/2) = v(n) + (1/2)*a(n)*dt
+    v_mid = U[N//2:N] + 0.5*a*dt                                # v(n+1/2) = v(n) + (1/2)*a(n)*dt
 
-    x_next = U[0:N//2] + v_mid*dt                           # x(n+1) = x(n) + v(n+1/2)*dt
-    a_next = F(concatenate((x_next, zeros(N//2))), t2)[N//2:N]# a(n+1) = F(x(n+1),t(n+1)) cogiendo solo las aceleraciones
-    v_next = v_mid + 0.5*a_next*dt                          # v(n+1) = v(n+1/2) + (1/2)*a(n+1)*dt
+    x_next = U[0:N//2] + v_mid*dt                               # x(n+1) = x(n) + v(n+1/2)*dt
+    a_next = F(concatenate((x_next, zeros(N//2))), t2)[N//2:N]  # a(n+1) = F(x(n+1),t(n+1)) cogiendo solo las aceleraciones
+    v_next = v_mid + 0.5*a_next*dt                              # v(n+1) = v(n+1/2) + (1/2)*a(n+1)*dt
  
     return concatenate((x_next, v_next))
 
