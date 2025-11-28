@@ -1,4 +1,4 @@
-from numpy import concatenate, array, zeros
+from numpy import concatenate, array, zeros, asarray, linalg
 from numpy.linalg import norm
 
 def F(U, t):
@@ -15,7 +15,34 @@ def oscilador(U, t):
     return array([U[1], -U[0]]) # x'' = -x
 
 
+def N_body_problem(U, t, N=5):
+    # U tiene forma (2*N*3,), pero lo reordenamos a matrices:
+    # pos: (N,3)
+    # vel: (N,3)
+    U = asarray(U)
+    pos = U[:3*N].reshape(N, 3)
+    vel = U[3*N:].reshape(N, 3)
 
+    # Creamos matrices para las derivadas: dpos = vel, dvel = aceleraciones
+    dpos = vel.copy()
+    dvel = zeros((N, 3))
+
+    # Calculamos aceleraciones
+    for i in range(N):
+        xi = pos[i]
+        for j in range(N):
+            if i != j:
+                xj = pos[j]
+                r = xj - xi
+                dist3 = linalg.norm(r)**3
+                dvel[i] += r / dist3
+
+    # Volvemos a unir derivadas en un vector plano del mismo formato que U
+    return concatenate([dpos.flatten(), dvel.flatten()])
+
+
+
+"""
 def N_body_problem(U, t, N=5):
 
     # dx/dt = v
@@ -48,3 +75,5 @@ def N_body_problem(U, t, N=5):
         F[(2*i+1)*dim:(2*i+2)*dim] = sum[:]
     
     return F
+
+"""
