@@ -1,12 +1,5 @@
-"""
-Ampliación de Matemáticas - Master Universitario en Sistemas Espaciales - ETSIAE
-Milestone 6: Lagrange points and their stability.
- 1. Write a high order embedded Runge-Kutta method.
- 2. Write function to simulate the circular restricted three body problem.
- 3. Determination of the Lagrange points F(U) = 0.
- 4. Stability of the Lagrange points: L1,L2,L3,L4,L5.
- 5. Orbits around the Lagrange points by means of different temporal schemes.
-"""
+#Usados en el trabajo final de AM1
+
 
 from numpy import array,concatenate,zeros,abs,max,log,real,imag,isclose,eye,block,all,meshgrid,linspace,finfo,copy,sqrt, maximum, minimum
 from numpy.linalg import norm,eigvals
@@ -14,11 +7,14 @@ from scipy.optimize import fsolve
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import inspect
+from differential_equations import N_body_problem
+from temporal_schemes import Euler, RK4, Crank_Nicolson, Evil_Euler, Leapfrog
+from aux_functions import Cauchy_problem
+from numpy import linspace, array
 
 
 
-
-def RungeKutta45_Solver(f, tspan, y0, N, max_steps = 100000):
+def RungeKutta45_Solver(f, y0, tspan, N=100, max_steps = 100000):
 
 
     
@@ -145,9 +141,6 @@ def CR3BP_equations(t, vec, mu = 0.012277471):
 
 
 """
-----------------------------
-2. LAGRANGE POINTS FOR CIRCULAR RESTRICTED 3 BODY PROBLEM
-----------------------------
 d2x/dt=dx/dt=0
 d2x/dt=dx/dt=0
 
@@ -181,9 +174,30 @@ def Lagrange_Points(mu):
 
 
 
-r0 = array([0.487,0.86]) #Definition of initial position
-dr0 = array([0, 0]) #Definition of initial velocity
-delta_T=0.001 #Definition of Delta T = t_total/n
-n=10000 #Definition of n number of steps
-U0=concatenate((r0,dr0)) #initial conditions U0 
+
+r0 = array([0.487,0.86]) 
+dr0 = array([0, 0]) 
+delta_T=0.001 
+N=10000
+U0=concatenate((r0,dr0)) 
 mu=0.01215058
+T = 15
+tspan = array([0,T])
+
+
+L_points=Lagrange_Points(mu)
+L1_x, L1_y = L_points['L1']
+L2_x, L2_y = L_points['L2']
+L3_x, L3_y = L_points['L3']
+L4_x, L4_y = L_points['L4']
+L5_x, L5_y = L_points['L5']
+
+print(f"L1: x = {L1_x:.6f}, y = 0.000000")
+print(f"L2: x = {L2_x:.6f}, y = 0.000000")
+print(f"L3: x = {L3_x:.6f}, y = 0.000000")
+print(f"L4: x = {L4_x:.6f}, y = {L4_y:.6f}")
+print(f"L5: x = {L5_x:.6f}, y = {L5_y:.6f}")
+
+
+
+t_sol, U_sol = RungeKutta45_Solver(CR3BP_equations, tspan, U0, N)
