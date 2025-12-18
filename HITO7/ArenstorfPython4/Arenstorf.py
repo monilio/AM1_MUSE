@@ -6,7 +6,7 @@ Milestone 7: Orbits of the circular restricted three body problem.
 """
 
 from numpy import array,concatenate
-
+import time
 from initial_conditions import Initial_Conditions
 from arenstorf_equations import arenstorf_equations,F_CR3BP
 
@@ -54,14 +54,15 @@ print("Seleccione la forma de calculo de condiciones iniciales:")
 print("1. Obtenidas por NEWTON SHOOTING METHOD")
 print("2. TABULADAS")
 
-opcion1 = input("¿Método de obtención de C.I.? (1-2): ")
+#opcion1 = input("¿Método de obtención de C.I.? (1-2): ")
+opcion1 = "2"
 
 print("Seleccione la tipología de la orbita:")
 print("1. 4 loops")
 print("2. 3 loops")
 print("3. 2 loops")
-opcion2 = input("¿Número de \"loops\" de la órbita? (1-3): ")
-
+#opcion2 = input("¿Número de \"loops\" de la órbita? (1-3): ")
+opcion2 = "1"
 
 match opcion1:
    case "1":
@@ -175,11 +176,16 @@ match opcion1:
    case _:
       print("Opción no válida.")
 
+t0 = time.perf_counter()
 
 
-N           = 100000                                        # Número de pasos general
-num_orbitas = 1                                             # Número de órbitas a realizar
+
+
+#N           = 260                                      # Número de pasos general
+N           = 20000
+num_orbitas = 5                                            # Número de órbitas a realizar
 tspan       = array([0,T*num_orbitas]) 
+#tspan = array([0,1])
 
 
 
@@ -194,6 +200,10 @@ tspan       = array([0,T*num_orbitas])
 #t_sol, U_sol = RungeKutta45_Solver(arenstorf_equations, tspan, U0, N)
 #t_sol, U_sol = RungeKutta4_Solver(arenstorf_equations, tspan, U0, N)
 t_sol, U_sol = GBS_Solver_Clase(arenstorf_equations, tspan, U0, N)
+
+t1 = time.perf_counter()
+elapsed = t1 - t0
+print(f"TIEMPO DE COMPUTACION ={elapsed}")
 
 U_T=U_sol[-1,0:4]
 Error_UT=U0_exact-U_T
@@ -221,20 +231,24 @@ print(f"Error de vy(T)={Error_UT[3]}")
 # Definimos una lista de pasos para ver la evolución.
 # Incluimos pasos "malos" (pequeños N) y "buenos" (grandes N)
 
- 
-lista_N = [10,50,100,200,300,500, 1000, 2000, 4000, 5000, 8000,15000,20000,30000,40000]
+# #lista_N = [2,5,10,20,50,100,200,500,1000,2000]
+# lista_N = [5,10,25,30,35,40]
+# #lista_N = [200,205,210,215,220,225,230,235,240,245,250,255,260,265,270,275,280,285,290,295,300]
+# #lista_N = [10,50,100,200,300,500, 1000, 2000, 4000, 5000, 8000,15000,20000,30000,40000]
 
-Graficar_Convergencia_Richardson(
-    Temporal_Scheme = AdamsMoulton4_Solver,
-   #  Temporal_Scheme = RungeKutta4_Solver,
-   F = F_CR3BP,
-    U0 = U0,
-    Tf_fijo = 1.0,
-    lista_N_base = lista_N,
-    p_teorico = 4
-)
+# Graficar_Convergencia_Richardson(
+#    #  Temporal_Scheme = AdamsMoulton4_Solver,
+#    #  Temporal_Scheme = RungeKutta4_Solver,
+#      Temporal_Scheme = GBS_Solver_Clase,
+#    #Temporal_Scheme = RungeKutta45_Solver,
+#    F = F_CR3BP,
+#     U0 = U0,
+#     Tf_fijo = 1.0,
+#     lista_N_base = lista_N,
+#     p_teorico = 8
+# )
 
-    
+
 
 
 

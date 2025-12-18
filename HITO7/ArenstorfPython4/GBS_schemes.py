@@ -156,9 +156,37 @@ def GBS_Step(f, tn, yn, h, m_list, tol=1e-11):
             p = 2 * (i + 1)                 
             #h_new = h * min(1.001, max(0.0001, (tol/err)^(1/(p+1))))
             if err == 0:
-                h_new = h * 1.001      # Evita división por cero
+                h_new = h * 1.00000000001      # Evita división por cero
             else:
-                h_new = h * min(1.001, (tol / err)**(1/(p+1)))
+                h_new = h *1.00000000001
+                #h_new = h * min(1.001, (tol / err)**(1/(p+1)))
+
+            """
+            ============================================================================
+            Esta última línea es importante.
+            Esta  actualiza el valor del tamaño del paso de tiempo en función del error obtenido.
+
+            la función de (tol/err)^(1/(p+1)) básicamente hace que vayas a un tamaño de paso h que haga que el próximo error que nos
+            de, sea lo más similar posible a la tolerancia. Esto hace que siempre vayas al límite, tratando de conseguir el mayor 
+            tamaño de paso que cumpla la tolerancia. 
+
+            Esto aumenta el paso siempre, pero lo hace de menor medida cuanto más cerca hayas estado de la tolerancia.
+            Para no liarla y que el paso aumente una barbaridad, se tiene cuidado y se pone un máximo. Si no, si un paso 
+            te fuera muy bien, podría dar un siguiente paso enorme que desastibilizase todo. 
+            ============================================================================
+            """
+
+            return success, y_best, h_new
+        if err > tol:               # Si este error calculado es menor que la tolerancia dada                                  
+            success = True          # Entonces el paso ha sido un éxito
+            y_best = Extrap[i][i]   # Se toma que el valor de y es el de la última extrapolación de esta fila
+            p = 2 * (i + 1)                 
+            #h_new = h * min(1.001, max(0.0001, (tol/err)^(1/(p+1))))
+            if err == 0:
+                h_new = h * 1.00000000001      # Evita división por cero
+            else:
+                h_new = h *1.00000000001
+                #h_new = h * min(1.001, (tol / err)**(1/(p+1)))
 
             """
             ============================================================================
@@ -181,8 +209,8 @@ def GBS_Step(f, tn, yn, h, m_list, tol=1e-11):
         # NOTA: Nótese que el bucle no siempre llega al último valor de "m", si consigue estar por debajo de la tolerancia
         #       con un "m" menor, no es necesario continuar con "m"s más grandes
   
-
-    h_new = h * 0.25    # Si incluso con el mayor "m" no se ha logrado estar por debajo de la tolerancia, se actualiza el tamaño del paso de tiempo
+    h_new = h*1.0000001
+    #h_new = h * 0.25    # Si incluso con el mayor "m" no se ha logrado estar por debajo de la tolerancia, se actualiza el tamaño del paso de tiempo
                         # Este nuevo valor se pasa a la función principal para que desde este momento, siempre se parta desde este
                         # Esto posiblemente sea optimizable haciendo uso de (tol/err)^(1/(p+1))
 
@@ -400,11 +428,11 @@ def richardson_lagrange(U, x):
     w = zeros(Nl)
 
     for j in range(Nl):
-        idx = [k for k in range(Nl) if k != j]
-        w[j] = 1.0 / prod(x[j] - x[idx])
+        index = [k for k in range(Nl) if k != j]
+        w[j] = 1.0 / prod(x[j] - x[index])
 
-    wx = w / x
-    Uc = (wx @ U) / sum(wx)
+    w_x = w / x
+    Uc = (w_x @ U) / sum(w_x)
 
     return Uc
 
